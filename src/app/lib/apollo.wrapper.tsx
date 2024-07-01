@@ -11,7 +11,10 @@ import {
 } from "@apollo/experimental-nextjs-app-support";
 // @ts-ignore
 import { createUploadLink } from 'apollo-upload-client';
+import { persistCache, LocalStorageWrapper } from 'apollo3-cache-persist';
 import { setContext } from '@apollo/client/link/context';
+
+const cache = new InMemoryCache();
 
 const authLink = setContext((_, { headers }) => {
   return {
@@ -22,13 +25,20 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+if (typeof window !== 'undefined') {
+  persistCache({
+    cache,
+    storage: new LocalStorageWrapper(window.localStorage),
+  });
+}
+
 function makeClient() {
   const httpLink = new createUploadLink({
       uri: "https://lottiefiles-backend-production.up.railway.app/graphql",
   });
 
   return new ApolloClient({
-    cache: new InMemoryCache(),
+    cache,
     link:
       typeof window === "undefined"
         ? ApolloLink.from([
@@ -38,6 +48,16 @@ function makeClient() {
             authLink.concat(httpLink),
           ])
         : authLink.concat(httpLink),
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: 'cache-and-network',
+        errorPolicy: 'ignore',
+      },
+      query: {
+        fetchPolicy: 'cache-first',
+        errorPolicy: 'all',
+      },
+    }
   });
 }
 

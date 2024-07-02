@@ -31,7 +31,7 @@ export default function Home() {
   const { data, loading, error, refetch } = useQuery<{ getAnimations: Animation[] }>(ANIMATIONS_QUERY, {
     variables: {
       searchTerm: '',
-    }
+    },
   });
 
   const [uploadAnimation, { loading: isLoadingUpload }] = useMutation(UPLOAD_ANIMATION_MUTATION);

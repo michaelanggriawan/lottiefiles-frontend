@@ -48,16 +48,6 @@ function makeClient() {
             authLink.concat(httpLink),
           ])
         : authLink.concat(httpLink),
-    defaultOptions: {
-      watchQuery: {
-        fetchPolicy: 'cache-and-network',
-        errorPolicy: 'ignore',
-      },
-      query: {
-        fetchPolicy: 'cache-first',
-        errorPolicy: 'all',
-      },
-    }
   });
 }
 

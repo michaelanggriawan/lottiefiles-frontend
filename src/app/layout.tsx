@@ -16,14 +16,17 @@ export default function RootLayout({
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
         .register('/service-worker.js', { scope: '/' })
-        .then((registration) => console.log('scope is: ', registration.scope));
+        .then((registration) => console.log('Service Worker registered with scope: ', registration.scope))
+        .catch((error) => console.error('Service Worker registration failed:', error));
     }
   }, []);
   
   return (
     <html lang="en">
-      <link rel="manifest" href="/manifest.json" />
-      <meta name="theme-color" content="#000000" />
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#000000" />
+      </head>
       <ApolloWrapper>
         <body className={inter.className}>{children}</body>
       </ApolloWrapper>
